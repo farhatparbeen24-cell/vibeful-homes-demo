@@ -114,10 +114,87 @@ function seedIfEmpty() {
   write(KEYS.settings, SEED_SETTINGS);
 }
 
+/** True when a stored image URL points to a remote host (legacy seed data). */
+function isRemoteUrl(u: unknown): u is string {
+  return typeof u === "string" && (/^https?:\/\//.test(u) || u.startsWith("//"));
+}
+
+/**
+ * One-time in-place migration for browsers seeded before product images were
+ * localized: the very first demo seed referenced an external image CDN, and
+ * because seeding only happens when localStorage is empty, those remote URLs
+ * can still live in a returning visitor's storage. This rewrites ONLY the
+ * image URL fields on products and cart items — orders, staff, settings,
+ * quantities and every other user change stay exactly as they are, so
+ * refreshes never reset anyone's data. Idempotent: it writes only when a
+ * remote URL is actually replaced. SafeImage's placeholder covers anything
+ * this migration cannot map (e.g. an admin-entered remote URL).
+ */
+function migrateLegacyImageUrls() {
+  // Products: replace remote URLs with the matching local asset from the
+  // current seed (matched by slug, same gallery position).
+  try {
+    const rawProducts = window.localStorage.getItem(KEYS.products);
+    if (rawProducts) {
+      const stored = JSON.parse(rawProducts) as Product[];
+      if (Array.isArray(stored)) {
+        const seedBySlug = new Map(SEED_PRODUCTS.map((p) => [p.slug, p]));
+        let changed = false;
+        const next = stored.map((p) => {
+          if (!Array.isArray(p?.images) || !p.images.some(isRemoteUrl)) return p;
+          changed = true;
+          const seed = seedBySlug.get(p.slug);
+          return {
+            ...p,
+            images: p.images.map(
+              (u, i) =>
+                (isRemoteUrl(u) ? seed?.images[i] ?? seed?.images[0] : u) ??
+                "/images/placeholder.svg",
+            ),
+          };
+        });
+        if (changed) write(KEYS.products, next);
+      }
+    }
+  } catch {
+    // corrupted JSON — SafeImage's fallback keeps the UI working
+  }
+
+  // Cart thumbnails: match the (now local) product image by slug.
+  try {
+    const rawCart = window.localStorage.getItem(KEYS.cart);
+    if (rawCart) {
+      const stored = JSON.parse(rawCart) as CartItem[];
+      if (Array.isArray(stored) && stored.some((c) => isRemoteUrl(c?.image))) {
+        const products = JSON.parse(
+          window.localStorage.getItem(KEYS.products) ?? "[]",
+        ) as Product[];
+        const imageBySlug = new Map(
+          products
+            .filter((p) => typeof p?.slug === "string" && typeof p?.images?.[0] === "string")
+            .map((p) => [p.slug, p.images[0] as string]),
+        );
+        const next = stored.map((c) => {
+          if (!isRemoteUrl(c?.image)) return c;
+          const local = imageBySlug.get(c.slug);
+          return {
+            ...c,
+            image: local && local.startsWith("/") ? local : "/images/placeholder.svg",
+          };
+        });
+        write(KEYS.cart, next);
+      }
+    }
+  } catch {
+    // corrupted JSON — ignore, SafeImage placeholder covers rendering
+  }
+}
+
 function hydrateOnce() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   seedIfEmpty();
+  migrateLegacyImageUrls();
   productsCache = read(KEYS.products, SEED_PRODUCTS);
   cartCache = read<CartItem[]>(KEYS.cart, []);
   ordersCache = read(KEYS.orders, SEED_ORDERS);

@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Home,
@@ -13,6 +12,7 @@ import {
   Menu,
   Phone,
 } from "lucide-react";
+import { SafeImage } from "@/components/store/safe-image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -158,15 +158,13 @@ export function SiteHeader() {
                     onClick={() => setSearchOpen(false)}
                   >
                     <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted">
-                      {p.images[0] && (
-                        <Image
-                          src={p.images[0]}
-                          alt=""
-                          fill
-                          sizes="40px"
-                          className="object-cover"
-                        />
-                      )}
+                      <SafeImage
+                        src={p.images[0]}
+                        alt=""
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
                     </span>
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-medium">

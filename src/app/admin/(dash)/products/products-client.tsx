@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import { toast } from "sonner";
 import {
   Plus,
@@ -18,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
+import { SafeImage } from "@/components/store/safe-image";
 import {
   Dialog,
   DialogContent,
@@ -331,9 +331,7 @@ export function ProductsClient() {
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3">
                             <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-muted">
-                              {p.images[0] && (
-                                <Image src={p.images[0]} alt="" fill sizes="48px" className="object-cover" />
-                              )}
+                              <SafeImage src={p.images[0]} alt="" fill sizes="48px" className="object-cover" />
                             </span>
                             <div className="min-w-0">
                               <p className="line-clamp-1 font-semibold">{p.name}</p>
@@ -406,9 +404,7 @@ export function ProductsClient() {
                 <div key={p.id} className="rounded-2xl border border-border bg-white p-4 shadow-sm">
                   <div className="flex gap-3">
                     <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-muted">
-                      {p.images[0] && (
-                        <Image src={p.images[0]} alt="" fill sizes="64px" className="object-cover" />
-                      )}
+                      <SafeImage src={p.images[0]} alt="" fill sizes="64px" className="object-cover" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="line-clamp-2 text-sm font-semibold">{p.name}</p>
