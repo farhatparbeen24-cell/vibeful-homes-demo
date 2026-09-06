@@ -1,0 +1,11 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  output: "standalone",
+  // No database, no external image hosts, no environment variables required.
+  // All product images are local files under public/images/.
+  // The demo WhatsApp number lives in src/lib/config.ts.
+  reactStrictMode: false,
+};
+
+export default nextConfig;

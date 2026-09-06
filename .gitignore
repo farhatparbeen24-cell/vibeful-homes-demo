@@ -1,0 +1,78 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files — never commit real secrets; keep the example template
+.env
+.env.*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# logs
+*.log
+dev.log
+dev.out.log
+server.log
+
+# lockfiles other than package-lock.json (this repo targets npm/Vercel)
+bun.lock
+bun.lockb
+yarn.lock
+pnpm-lock.yaml
+
+# local tooling / sandbox-only artifacts (not part of the deployed app)
+.claude
+.z-ai-config
+local-*
+test
+prompt
+Caddyfile
+worklog.md
+
+# sandbox support directories — not needed on GitHub/Vercel
+/skills/
+/scripts/
+/tool-results/
+/upload/
+/download/
+/logs/
+/examples/
+/mini-services/
+/tests/
+/db/
+/prisma/
+/.zscripts/

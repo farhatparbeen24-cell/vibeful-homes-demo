@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#FAF8F5"/>
+  <rect x="240" y="150" width="120" height="95" rx="12" fill="none" stroke="#4B2142" stroke-width="14"/>
+  <path d="M225 245 L300 185 L375 245" fill="none" stroke="#4B2142" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="300" cy="230" r="12" fill="#D59A36"/>
+  <path d="M262 320 h76" stroke="#D59A36" stroke-width="14" stroke-linecap="round"/>
+  <text x="300" y="395" font-family="Georgia, serif" font-size="30" fill="#4B2142" text-anchor="middle">Vibeful Homes</text>
+</svg>
